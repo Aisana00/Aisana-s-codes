@@ -8,7 +8,7 @@ class Account:
             self.balance += amount
             print(f"Deposited: ${amount}. New balance: ${self.balance}")
         else:
-            print("Deposit amount must be positive!")
+                
     
     def withdraw(self, amount):
         if amount > self.balance:
