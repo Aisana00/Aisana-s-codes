@@ -3,7 +3,7 @@ import os
 import sys
 
 pygame.init()
-pygame.mixer.init()
+pygame.mixer.init() #аудио система
 
 screen = pygame.display.set_mode((400, 200))
 pygame.display.set_caption(" Music Player")
@@ -33,7 +33,7 @@ print("Controls: SPACE - play/pause , S - stop , N - next , P - previous , ESC -
 
 play()
 
-clock = pygame.time.Clock()
+clock = pygame.time.Clock()   #запускай цикл не быстрее, чем 30 раз в секунду
 
 while True:
     for event in pygame.event.get():
@@ -41,7 +41,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:  #если нажата какая-то клавиша — реагируй.
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
@@ -68,5 +68,5 @@ while True:
                 i = (i - 1) % len(songs)
                 play()
 
-    pygame.display.flip()
+    pygame.display.flip()  #обнова
     clock.tick(30)

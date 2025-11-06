@@ -18,7 +18,7 @@ clock_rect = background.get_rect()
 
 def draw_rotated(surface, img, pos, angle):
     rotated = pygame.transform.rotate(img, angle)
-    rect = rotated.get_rect(center=img.get_rect(center=pos).center)
+    rect = rotated.get_rect(center=img.get_rect(center=pos).center) #Считает, где именно должна стоять повернутая картинка, чтобы не "съехать"
     surface.blit(rotated, rect)
 
 angle_left = 0
@@ -33,7 +33,7 @@ while True:
     minute_angle = now.minute * 6 - 90
     second_angle = now.second * 6 - 90
 
-    screen.fill(BG_COLOR)
+    screen.fill(BG_COLOR)   #Если не очищать экран, старые стрелки останутся
     screen.blit(background, (center_x, center_y))
     screen.blit(background, clock_rect)
 

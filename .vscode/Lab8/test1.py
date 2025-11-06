@@ -98,7 +98,7 @@ while running:
     screen.blit(background, (0, b_y - H))
 
     scores = font_small.render(str(SCORE), True, (0, 0, 0))
-    screen.blit(scores, (10, 10))
+    screen.blit(scores, (370, 10))
 
    
     for entity in all_sprites:

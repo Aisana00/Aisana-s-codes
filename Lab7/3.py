@@ -15,7 +15,7 @@ ball_speed = 20
 
 running = True
 while running:
-    screen.fill(bg_color)
+    screen.fill(bg_color)  #“стереть” старое положение шарика иначе он бы оставлял следы
 
     pygame.draw.circle(screen, ball_color, (ball_x, ball_y), ball_radius)
 
@@ -25,11 +25,14 @@ while running:
             quit()
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP and ball_y - ball_radius > 0:
+            if event.key == pygame.K_UP and ball_y - ball_radius > 0: #координата самого верха шара
                 ball_y -= ball_speed
             if event.key == pygame.K_DOWN and ball_y + ball_radius < height:
                 ball_y += ball_speed
+    
             if event.key == pygame.K_LEFT and ball_x - ball_radius > 0:
+                ball_x -= ball_speed
+            elif pygame.K_LEFT and ball_x - ball_radius > width:
                 ball_x -= ball_speed
             if event.key == pygame.K_RIGHT and ball_x + ball_radius < width:
                 ball_x += ball_speed
