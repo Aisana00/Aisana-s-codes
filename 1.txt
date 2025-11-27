@@ -1,0 +1,91 @@
+import psycopg2
+import csv
+
+# ===== Параметры подключения =====
+DB_USER = "postgres"          # твой пользователь
+DB_PASSWORD = "aisana111"   # твой пароль
+DB_HOST = "localhost"
+DB_NAME = "phonebook_db"
+
+# ===== 1. Подключаемся к дефолтной базе, чтобы создать phonebook_db =====
+conn = psycopg2.connect(
+    host=DB_HOST,
+    database="postgres",   # временно дефолтная база
+    user=DB_USER,
+    password=DB_PASSWORD
+)
+conn.autocommit = True
+cur = conn.cursor()
+
+# Проверяем, существует ли база
+cur.execute("SELECT 1 FROM pg_database WHERE datname=%s", (DB_NAME,))
+exists = cur.fetchone()
+if not exists:
+    cur.execute(f"CREATE DATABASE {DB_NAME};")
+    print(f"База данных '{DB_NAME}' создана.")
+else:
+    print(f"База данных '{DB_NAME}' уже существует.")
+
+cur.close()
+conn.close()
+
+# ===== 2. Подключаемся к phonebook_db =====
+conn = psycopg2.connect(
+    host=DB_HOST,
+    database=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD
+)
+cur = conn.cursor()
+
+# ===== 3. Создание таблицы =====
+cur.execute("""
+CREATE TABLE IF NOT EXISTS phonebook (
+    user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100),
+    phone VARCHAR(20) NOT NULL UNIQUE
+)
+""")
+conn.commit()
+print("Таблица 'phonebook' готова.")
+
+# ===== 4. Вставка данных из CSV =====
+def insert_from_csv(file_path):
+    with open(file_path, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            cur.execute(
+                "INSERT INTO phonebook (first_name, last_name, phone) VALUES (%s, %s, %s) ON CONFLICT (phone) DO NOTHING",
+                (row['first_name'], row['last_name'], row['phone'])
+            )
+    conn.commit()
+    print("Данные из CSV вставлены.")
+
+# ===== 5. Ввод с консоли =====
+def insert_from_console():
+    first_name = input("Enter first name: ")
+    last_name = input("Enter last name: ")
+    phone = input("Enter phone: ")
+    cur.execute(
+        "INSERT INTO phonebook (first_name, last_name, phone) VALUES (%s, %s, %s) ON CONFLICT (phone) DO NOTHING",
+        (first_name, last_name, phone)
+    )
+    conn.commit()
+    print("Данные вставлены.")
+
+# ===== 6. Меню =====
+while True:
+    print("\nMenu: 1) CSV Insert  2) Console Insert  3) Exit")
+    choice = input("Choose: ")
+    if choice == "1":
+        insert_from_csv("phonebook.csv")  # CSV должен быть в этой же папке
+    elif choice == "2":
+        insert_from_console()
+    elif choice == "3":
+        break
+    else:
+        print("Invalid choice")
+
+cur.close()
+conn.close()
